@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Sketchin'</title>
+		<!-- include Google's AJAX API loader -->
+		<script src="http://www.google.com/jsapi"></script>
+		<!-- load JQuery and UI from Google (need to use UI to animate colors) -->
+		<script type="text/javascript">
+			google.load("jqueryui", "1.5.2");
+		</script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+		<script type='text/javascript' src='etchsketch.js'></script>
+		<link rel='stylesheet' type='text/css' href='etchsketch.css'/>
+	</head>
+
+	<body>
+		<div class='nav'>
+			<h1>Etchin'<br/>-n-<br/> Sketchin'</h1>
+			<div class="button">
+				<button id="newgrid" onclick="sketch()">Set Size</button>
+				<br/>
+				<button id="clear" onclick="">Empty</button>
+				<br/>
+				<p>Styles:</p>
+				<button id="standard" onclick="options(1)">Dark</button>
+				<br/>
+				<button id="shaded" onclick="options(2)">Shaded</button>
+				<br/>
+				<button id="random" onclick="options(3)">Random</button>
+				<br/>
+				
+			</div>
+			<br/>
+			
+			<br/>
+		</div>
+		<div class="grid"></div>
+
+	</body>
+</html>
