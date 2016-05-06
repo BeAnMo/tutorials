@@ -18,12 +18,12 @@ function sketch(){
 		alert("You broke it!");
 	}		
 };
-// this ain't workin'
+/* this ain't workin'
 function clear(){
 	var sq = document.getElementsByClassName('square');
 	sq.remove();
 }
-
+*/
 
 function standard() {	
 	$('.square').mouseenter(function(){	
