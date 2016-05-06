@@ -58,15 +58,19 @@ h1 {
 	margin-right: auto;
 	margin-left: 6em;
 	background-color: #bdbdbd;
-	height: 500px;
-	width: 500px;
+	height: 600px;
+	width: 600px;
 	margin-top: 40px;
 }
 
 
 .nav {
 	width: 40%;
-	height: 20em;
+	height: 20px;
 	float: right;
-	margin-right: 6em;
+	margin-right: 10px;
+}
+
+#n {
+	margin-left: 20px;
 }
