@@ -33,8 +33,6 @@ function pairElement(str) {
 	}
 }
   
-  
-  
   return multiArr;
 }
 
