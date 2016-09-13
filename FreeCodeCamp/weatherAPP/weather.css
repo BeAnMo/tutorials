@@ -1,0 +1,10 @@
+
+.display {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.intro {
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 0 3px 7px #111;
+}
