@@ -8,7 +8,7 @@
 ; **** data definitions ****:
 ; ---------------------------
 (define USER-INFO-CSV
-  "/home/bammer/Desktop/appClass/user_info_lombard.csv")
+  "****/user_info_lombard.csv")
 (define USER-INFO-HEADER
   (first (read-csv-file USER-INFO-CSV)))
 (define USER-INFO-LIST
