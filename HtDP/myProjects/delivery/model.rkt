@@ -1,10 +1,10 @@
 ; DB model for Delivery App
 #lang racket
-
 (require db)
 
 (struct storage (db))
-; ./delivery.db
+; db is a SQLite connection
+
 ; String -> Storage
 ; Takes path and creates a DB with tables 'shifts' & 'weather'
 ; if they don't already exist

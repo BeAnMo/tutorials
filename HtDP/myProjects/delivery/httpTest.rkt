@@ -15,6 +15,7 @@
   (flround (- (* temp-k 9/5) 459.67)))
 
 ; JSExpr -> Weather
+; Converts a JS expression to a Weather
 (define (make-city-info city-js)
   (make-weather
     (hash-ref city-js 'name)
@@ -28,6 +29,7 @@
 	  
 
 ; String|Number -> Ouput Port
+; Converts an input to an output port
 (define (str->out s)
   (cond
    [(string? s) 
@@ -43,6 +45,7 @@
 	     (current-output-port))]))
 
 ; Weather -> String
+; Creates a string from a Weather for display on an output port
 (define (weather->str w)
   (string-append "City:        " (weather-city w) "\n"
 		 "Conditions:  " (weather-desc w) "\n"
@@ -54,10 +57,12 @@
 			   (weather-lo w)) "\n"))
 
 ; Weather -> Output Port
+; Displays a Weather on an output port
 (define (weather->output-port w)
   (str->out (weather->str w)))
 
 ; Input Port -> Weather -> Output Port
+; Testing function
 (define (input)
   (display "Enter a city name (ex. Chicago,US)> ")
   (local ((define city
@@ -67,6 +72,9 @@
 
 
 ; String -> Weather
+; Takes a string "City\,CC" (where CC is 2 letter abbrv)
+; Makes a GET request for weather data
+; Returns a Weather with data from input city
 (define (get-city-info city)
   (local ((define city-url
 	    (url "http" #f "api.openweathermap.org" #f #t
