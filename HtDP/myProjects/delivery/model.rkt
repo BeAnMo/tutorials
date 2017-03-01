@@ -2,8 +2,14 @@
 #lang racket
 (require db)
 
+;;;; Test
+;(struct shift [date wage hours tips weather holiday] #:mutable)
+
 (struct storage (db))
 ; db is a SQLite connection
+
+(struct app (storage id))
+; storage is a Storage struct, id is an integer
 
 ; String -> Storage
 ; Takes path and creates a DB with tables 'shifts' & 'weather'
@@ -22,35 +28,65 @@
   (unless (table-exists? the-db "weather")
     (query-exec the-db
 		(string-append
-		 "CREATE TABLE weather (pid INTEGER, "
+		 ; pid should be shift_id
+		 "CREATE TABLE weather (shift_id INTEGER, "
 		 "city TEXT, conditions TEXT, temp REAL, "
 		 "hi REAL, lo REAL)")))
   the-store)
 
 ; Storage, String, Number, Number, Number, Boolean -> Void
 ; inserts a Shift into a DB
-(define (storage-insert-shift! a-store dt wg hr tp hd)
+(define (storage-insert-shift! a-store date wage
+			       hours tips holiday)
   (query-exec
    (storage-db a-store)
    (string-append
     "INSERT INTO shifts (date, wage, hours, tips, holiday) "
     "VALUES (?, ?, ?, ?, ?)")
-   dt wg hr tp hd))
+   date wage hours tips holiday))
 
-; Storage, String, String, Number, Number, Number -> Void
+; Storage, Number, String, String, Number, Number, Number -> Void
 ; inserts a Weather into a DB
-(define (storage-insert-weather! a-store cy cd t th tl)
+(define (storage-insert-weather! a-store
+				 a-shift-id
+				 city
+				 conditions
+				 temp hi lo)
   (query-exec
    (storage-db a-store)
    (string-append
-    "INSERT INTO weather (pid, city, conditions, temp, hi, lo) "
+    "INSERT INTO weather (shift_id, city, "
+    "conditions, temp, hi, lo) "
     "VALUES (?, ?, ?, ?, ?, ?)")
-   cy cd t th tl))
+   ; need pID to enter, match with shift ID
+   ; pid is the relation to id in shifts, should be shift_id
+   a-shift-id
+   city conditions
+   temp hi lo))
 
+; Storage -> List-of-Apps
+; Takes in a Storage struct, and retrieves the id number
+; that corresponds with a Shift in the shift table
+(define (app-stores a-store)
+  (define (id->app an-id)
+    (app a-store an-id))
+  (map id->app
+       (query-list (storage-db a-store)
+		   "SELECT id FROM shifts")))
+
+; Storage -> Number
+; Queries the shift table for the last entry - MAX(id)
+(define (get-shift-id a-store)
+  (first (query-list (storage-db a-store)
+		     "SELECT MAX(id) FROM shifts")))
 
 (provide create-db
+	 (struct-out storage)
 	 storage-insert-shift!
-	 storage-insert-weather!)
+	 storage-insert-weather!
+	 get-shift-id
+	 app-stores
+	 app-id)
 	 
 
 

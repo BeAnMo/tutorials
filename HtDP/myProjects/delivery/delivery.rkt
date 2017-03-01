@@ -21,7 +21,7 @@
 ; CONSTANTS
 (define WAGE 6.0)
 (define CITY "Chicago,US")
-
+(define PATH "delivery.db")
 
 ;;;; FUNCTIONS:
 
@@ -35,8 +35,8 @@
 ; Produces a Weather struct of the current weather
 ; (ideally want weather info to spread over entire shift)
 (define (create-weather city)
-  (display "...getting today's weather...\n")
-  (get-city-info city))
+  (display "Getting today's weather...\n")
+  (get-weather-info city))
 
 ; Input Port, String -> String|Number
 ; Allows user to enter a string  that represents a Shift field
@@ -75,19 +75,50 @@
 ; Input Port(s), Storage -> Simple-Shift
 ; Launches a prompt to get user's shift info and
 ; Returns a Simple-Shift
-(define (create-simple-shift a-store)
+(define (create-shift a-store)
+  (define a-weather (create-weather "Chicago,US"))
   (define a-shift (shift (get-date) (get-wage)
 		      (get-hours) (get-tips)
-		      (create-weather "Chicago,US")
+		      a-weather
 		      (get-holiday)))
   (storage-insert-shift!
    a-store
    (shift-date a-shift) (shift-wage a-shift)
    (shift-hours a-shift) (shift-tips a-shift)
-   (shift-holiday a-shift)))
+   (shift-holiday a-shift))
+  (storage-insert-weather!
+   a-store (weather-city a-weather) (weather-desc a-weather)
+   (weather-temp a-weather) (weather-hi a-weather)
+   (weather-lo a-weather)))
+
+; create-shift.v2
+(define (create-shift.v2 a-store)
+  (define the-weather (create-weather "Chicago,US"))
+
+  (storage-insert-shift! a-store (get-date) (get-wage)
+			 (get-hours) (get-tips) (get-holiday))
+
+  (define next-id (get-shift-id a-store))
   
-
+  (storage-insert-weather! a-store
+			   next-id
+			   (weather-city  the-weather)
+			   (weather-desc  the-weather)
+			   (weather-temp  the-weather)
+			   (weather-hi    the-weather)
+			   (weather-lo    the-weather)))
+  
 ;; need test object
+(define TEST0
+  (shift
+   "Tuesday, February 28th, 2017"
+   6.0
+   5
+   75
+   (make-weather "Chicago,US" "clear sky" 50.0 52.0 45.0)
+   0))
+; test run program:
 
-; test run program
-;(create-simple-shift (create-db "./delivery.db"))
+; can't use (create-db ...) as definition
+; (define STORE (create-db ...)) will not work
+; use - (create-simple-shift (create-db "./delivery.db"))

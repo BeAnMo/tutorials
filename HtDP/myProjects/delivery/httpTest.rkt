@@ -16,7 +16,7 @@
 
 ; JSExpr -> Weather
 ; Converts a JS expression to a Weather
-(define (make-city-info city-js)
+(define (make-city-weather city-js)
   (make-weather
     (hash-ref city-js 'name)
     (hash-ref (first (hash-ref city-js 'weather)) 'description)
@@ -67,7 +67,7 @@
   (display "Enter a city name (ex. Chicago,US)> ")
   (local ((define city
 	    (symbol->string (read (current-input-port))))
-	  (define city-weather (get-city-info city)))
+	  (define city-weather (get-weather-info city)))
     (weather->output-port city-weather)))
 
 
@@ -75,7 +75,7 @@
 ; Takes a string "City\,CC" (where CC is 2 letter abbrv)
 ; Makes a GET request for weather data
 ; Returns a Weather with data from input city
-(define (get-city-info city)
+(define (get-weather-info city)
   (local ((define city-url
 	    (url "http" #f "api.openweathermap.org" #f #t
 		 (list
@@ -89,10 +89,10 @@
 			   (port->string
 			    (get-pure-port city-url)))))
     
-    (make-city-info city-js)))
+    (make-city-weather city-js)))
 
-(provide get-city-info
-	 weather
+(provide get-weather-info
+	 (struct-out weather)
 	 weather-city
 	 weather-desc
 	 weather-temp
