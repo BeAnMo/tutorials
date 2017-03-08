@@ -4,12 +4,16 @@
 	 net/url
 	 json)
 
-; DATA DEFINITIONS:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;; DATA DEFINITIONS ;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;(weather String String Number Number)
 (define-struct weather (city desc hi lo temp))
      
 
-; FUNCTIONS:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;; FUNCTIONS ;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Number -> Number
 (define (kelvin->fahren temp-k)
   (flround (- (* temp-k 9/5) 459.67)))

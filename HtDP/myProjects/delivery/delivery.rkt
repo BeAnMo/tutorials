@@ -3,9 +3,9 @@
 (require "./httpTest.rkt"
 	 "./model.rkt"
 	 racket/date)
-
-;;;;; DATA DEFINITIONS:
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;; DATA DEFINITIONS ;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;(define-struct shift [date deliveries weather holiday])
 ; Shift is a struct:
 ; (make-shift String List-of-Delivery Weather Boolean)
@@ -23,8 +23,10 @@
 (define CITY "Chicago,US")
 (define PATH "delivery.db")
 
-;;;; FUNCTIONS:
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;; FUNCTIONS ;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Void -> String
 ; Gets the current date as a string
 (define (get-date)
@@ -72,43 +74,38 @@
      [(string=? "n" input) 0]
      [else (get-holiday)])))
 
-; Input Port(s), Storage -> Simple-Shift
+; Input Port(s), Storage -> Void
 ; Launches a prompt to get user's shift info and
-; Returns a Simple-Shift
+; inserts info into a DB
 (define (create-shift a-store)
-  (define a-weather (create-weather "Chicago,US"))
-  (define a-shift (shift (get-date) (get-wage)
-		      (get-hours) (get-tips)
-		      a-weather
-		      (get-holiday)))
-  (storage-insert-shift!
-   a-store
-   (shift-date a-shift) (shift-wage a-shift)
-   (shift-hours a-shift) (shift-tips a-shift)
-   (shift-holiday a-shift))
-  (storage-insert-weather!
-   a-store (weather-city a-weather) (weather-desc a-weather)
-   (weather-temp a-weather) (weather-hi a-weather)
-   (weather-lo a-weather)))
-
-; create-shift.v2
-(define (create-shift.v2 a-store)
   (define the-weather (create-weather "Chicago,US"))
+  (define the-date (get-date))
+  
+  (storage-insert-shift!
+   #:storage a-store
+   #:date the-date
+   #:wage (get-wage)
+   #:hours (get-hours)
+   #:tips (get-tips)
+   #:holiday? (get-holiday))
 
-  (storage-insert-shift! a-store (get-date) (get-wage)
-			 (get-hours) (get-tips) (get-holiday))
+  ; deletes all duplicates except the first
+  (storage-delete-duplicate-shifts! a-store the-date)
+  ; deletes the possible unmatched weather entries
+  (storage-delete-duplicate-weather! a-store)
 
   (define next-id (get-shift-id a-store))
   
-  (storage-insert-weather! a-store
-			   next-id
-			   (weather-city  the-weather)
-			   (weather-desc  the-weather)
-			   (weather-temp  the-weather)
-			   (weather-hi    the-weather)
-			   (weather-lo    the-weather)))
+  (storage-insert-weather!
+   #:storage a-store
+   #:shift-id next-id
+   #:city (weather-city  the-weather)
+   #:conditions (weather-desc  the-weather)
+   #:temp (weather-temp  the-weather)
+   #:temp-hi (weather-hi    the-weather)
+   #:temp-lo (weather-lo    the-weather)))
   
-;; need test object
+;;;; test object
 (define TEST0
   (shift
    "Tuesday, February 28th, 2017"
@@ -118,7 +115,3 @@
    (make-weather "Chicago,US" "clear sky" 50.0 52.0 45.0)
    0))
 ; test run program:
-
-; can't use (create-db ...) as definition
-; (define STORE (create-db ...)) will not work
-; use - (create-simple-shift (create-db "./delivery.db"))
