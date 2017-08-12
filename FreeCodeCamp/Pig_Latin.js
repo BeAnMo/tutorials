@@ -24,3 +24,27 @@ translatePigLatin("consonant");
 /*
 onsonantcay
 */
+
+
+/* update 2017/08/12 !!!  removed nested loop */
+
+function pigLatin(str){
+    var vowels = {
+        a: true, e: true, i: true,
+        o: true, u: true
+    };
+    var len = str.length;
+  
+    if(str.charAt(0) in vowels){
+        return str + 'way';
+    }
+  
+    for(var i = 0; i < len; i++){
+        if(str.charAt(i) in vowels){
+            return str.substr(i, len) + str.substr(0, i) + 'ay';
+        }
+    }
+}
+       
+       
+       
